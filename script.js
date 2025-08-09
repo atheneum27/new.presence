@@ -177,14 +177,3 @@ setupSignatureCanvas();
 populateNameDropdown();
 document.getElementById('contact-form').reset();
 signatureCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDApxCwdqXURI9AXdNvwRK5LDwqDPMXe_I",
-  authDomain: "atheneumsync.firebaseapp.com",
-  databaseURL: "https://atheneumsync-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "atheneumsync",
-  storageBucket: "atheneumsync.firebasestorage.app",
-  messagingSenderId: "383620444372",
-  appId: "1:383620444372:web:fc408b459512629d0e8b41",
-  measurementId: "G-Y4MX263QBM"
-};
