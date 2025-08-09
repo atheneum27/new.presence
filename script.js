@@ -177,3 +177,44 @@ setupSignatureCanvas();
 populateNameDropdown();
 document.getElementById('contact-form').reset();
 signatureCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+
+// Inisialisasi Supabase
+const supabaseUrl = 'https://your-project-id.supabase.co'; // Ganti dengan URL proyek Supabase Anda
+const supabaseKey = 'your-anon-public-key'; // Ganti dengan kunci API publik Supabase
+const supabase = Supabase.createClient(supabaseUrl, supabaseKey);
+
+// Ambil elemen formulir
+const form = document.getElementById('presenceForm');
+const statusInput = document.getElementById('status');
+const detailsInput = document.getElementById('details');
+
+// Simpan data ke Supabase saat formulir dikirim
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    const { error } = await supabase
+      .from('presence')
+      .upsert([{ id: 1, status: statusInput.value, details: detailsInput.value }]);
+    if (error) {
+      console.error('Error menyimpan data:', error.message);
+    } else {
+      console.log('Data tersimpan:', { status: statusInput.value, details: detailsInput.value });
+    }
+  } catch (err) {
+    console.error('Kesalahan:', err.message);
+  }
+});
+
+// Berlangganan ke pembaruan real-time
+supabase
+  .channel('public:presence')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'presence' }, (payload) => {
+    if (payload.eventType === 'UPDATE' || payload.eventType === 'INSERT') {
+      statusInput.value = payload.new.status || '';
+      detailsInput.value = payload.new.details || '';
+      console.log('Data diperbarui:', payload.new);
+    }
+  })
+  .subscribe((status) => {
+    console.log('Status langganan:', status);
+  });
